@@ -1,0 +1,62 @@
+.selection-row{
+    background: #effbf6;
+    cursor: pointer;
+}
+
+.selection-row:hover{
+    background: #daf5eb;
+}
+
+.selection-row:active{
+    background: #80dfb3;
+}
+
+.gly-remove{
+    
+}
+
+.title{
+    font-size: 1.3em;
+    font-weight: 500;
+}
+
+.bold{
+    font-weight: 600;
+}
+
+#selections-count-div{
+    display: inline;
+}
+
+.my-hidden{
+    display:none;
+}
+
+.inline{
+    display:inline;
+}
+
+.my-bold{
+    font-weight: 600;
+}
+
+.iter-counts-buttons{
+    margin: 28px 15px 15px 15px;
+}
+
+.my-table{
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+
+.my-table td{
+    color: #555555;
+}
+
+.clickable-cell:hover{
+    background: #dddddd;
+}
+
+.clickable-cell:active{
+    background: #cccccc;
+}
