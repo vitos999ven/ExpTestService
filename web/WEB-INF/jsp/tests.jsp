@@ -7,7 +7,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Tests</title>
+        <title>Статистики</title>
         <link rel="stylesheet" type="text/css" href="resources/my-styles.css" media="all" />
         <link rel="stylesheet" type="text/css" href="resources/bootstrap.css" media="all" />
         <link rel="stylesheet" type="text/css" href="resources/bootstrap-theme.css" media="all" />
@@ -30,7 +30,7 @@
             List<TestType> testTypes = (List<TestType>) request.getAttribute("testTypes");
         %>
         <div id="tests-div" class="col-md-12"> 
-            <h2>Tests for exponentiality</h2>
+            <h2>Критерии для проверки гипотезы экспоненциальности</h2>
             <hr>
             <div id="tests-buttons" class="btn-group btn-group-justified <%=((testTypes.isEmpty()) ? "hidden" : "")%>" data-toggle="buttons">
                 

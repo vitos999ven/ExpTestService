@@ -8,14 +8,14 @@ function compareWithEpsilon(first, second){
 }
 
 var TestTypes = {
-    GINI: {type: "gini", name: "Gini test", value: 1},
-    GREENWOOD: {type: "greenwood", name: "Greenwood test", value: 2},
-    FROCINI:{type: "frocini", name:"Frocini test", value: 3},
-    KIMBERMICHEL:{type: "kimbermichel", name:"Kimber-Michel test", value: 4},
-    MORAN:{type: "moran", name:"Moran test", value: 5},
-    RAO:{type: "rao", name:"Rao test", value: 6},
-    SHAPIROWILK:{type: "shapirowilk", name:"Shapiro-Wilk test"}, value: 7,
-    SHERMAN:{type: "sherman", name:"Sherman test", value: 8},
+    GINI: { type: "gini", name: "Gini", value: 1, onesided:false, aoewe: 0.8762, aoega: 0.6941 },
+    GREENWOOD: { type: "greenwood", name: "Greenwood", value: 2, onesided:false, aoewe: 0.6079, aoega: 0.3876 },
+    FROCINI:{ type: "frocini", name:"Frocini test", value: 3, onesided:true },
+    KIMBERMICHEL:{ type: "kimbermichel", name:"Kimber-Michel", value: 4, onesided:true },
+    MORAN:{ type: "moran", name:"Moran", value: 5, onesided:false, aoewe:0.9426, aoega: 1 },
+    RAO:{ type: "rao", name:"Rao", value: 6, onesided:false },
+    SHAPIROWILK:{ type: "shapirowilk", name:"Shapiro-Wilk", value: 7, onesided:false },
+    SHERMAN:{ type: "sherman", name:"Sherman", value: 8, onesided:false },
     getType: function(type) {
         for (var testTypeName in TestTypes) {
             var testType = TestTypes[testTypeName];
@@ -36,11 +36,12 @@ var SelectionTypes = {
     EXP: {
         type:"exp", 
         name: "Exponential",
-        createSeries: function(min, max, step) {
+        createSeries: function(min, max, step, scale) {
+            if (!scale) scale = 1;
             var array = [];
             var current = min;
             while(current <= max) {
-                var result = SelectionTypes.EXP.densityFunc(current, 1);
+                var result = SelectionTypes.EXP.densityFunc(current, scale);
                 if (!!result) {
                     array.push([current, result]);
                 }
@@ -58,12 +59,13 @@ var SelectionTypes = {
     WEIBULL: {
         type:"weibull", 
         name: "Weibull",
-        createSeries: function(min, max, step, k) {
+        createSeries: function(min, max, step, scale, k) {
+            if (!scale) scale = 1;
             if (!k) k = 1;
             var array = [];
             var current = min;
             while(current <= max) {
-                var result = SelectionTypes.WEIBULL.densityFunc(current, 1, k);
+                var result = SelectionTypes.WEIBULL.densityFunc(current, scale, k);
                 if (!!result) {
                     array.push([current, result]);
                 }
@@ -82,6 +84,97 @@ var SelectionTypes = {
             return Math.pow(-Math.log(1 - x), 1 / k);
         }
     },
+    NORMAL: {
+        type:"normal", 
+        name: "Normal",
+        createSeries: function(min, max, step, m, d) {
+            if (!m) m = 0;
+            if (!d) d = 1;
+            var array = [];
+            var current = min;
+            while(current <= max) {
+                var result = SelectionTypes.NORMAL.densityFunc(current, m, d);
+                if (!!result) {
+                    array.push([current, result]);
+                }
+                current += step;
+            }
+            return array;
+        },
+        densityFunc: function(x, m, d) {
+            var val = (1 / d * Math.sqrt(2 * Math.PI)) * Math.exp(- Math.pow(x - m, 2)/(2 * Math.pow(d, 2)));
+            if (val === Infinity) {
+                return SelectionTypes.NORMAL.densityFunc(x + 0.01, m, d);
+            }
+            return val;
+        },
+        value: function(x, l, k) {
+            return 0;
+        }
+    },
+    CHISCUARED: {
+        type:"chi-scuared", 
+        name: "Chi-scuared",
+        createSeries: function(min, max, step, k) {
+            if (!k) k = 1;
+            var array = [];
+            var current = min;
+            while(current <= max) {
+                var result = SelectionTypes.CHISCUARED.densityFunc(current, k);
+                if (!!result) {
+                    array.push([current, result]);
+                }
+                current += step;
+            }
+            return array;
+        },
+        densityFunc: function(x, k) {
+            var k2 = k / 2;
+            var val = (Math.pow(0.5, k2) / gammaFunc(k2)) * Math.pow(x, k2 - 1) * Math.exp(- x / 2);
+            if (val === Infinity) {
+                return SelectionTypes.CHISCUARED.densityFunc(x + 0.01, k);
+            }
+            return val;
+        },
+        value: function(x, l, k) {
+            return 0;
+        }
+    },
+    FISHER: {
+        type:"fisher", 
+        name: "Fisher",
+        createSeries: function(min, max, step, k1, k2) {
+            if (!k1) k1 = 1;
+            if (!k2) k2 = 1;
+            var array = [];
+            var current = min;
+            while(current <= max) {
+                var result = SelectionTypes.FISHER.densityFunc(current, k1, k2);
+                if (!!result) {
+                    array.push([current, result]);
+                }
+                current += step;
+            }
+            return array;
+        },
+        densityFunc: function(x, k1, k2) {
+            var k12 = k1 / 2;
+            var k22 = k2 / 2;
+            var k122 = k12 - k22;
+            if(k122 === 0) k122 = 0.0001
+            var gamma122 = gammaFunc(k122);
+            var gamma12 = (k122 === k12) ? gamma122 : gammaFunc(k12);
+            var gamma22 = (k122 === k22) ? gamma122 : (k12 === k22) ? gamma12 : gammaFunc(k22);
+            var val = (gamma122 / (gamma12 * gamma22)) * (Math.pow(x, k12 - 1) / Math.pow(x + 1, k12 + k22));
+            if (val === Infinity) {
+                return SelectionTypes.FISHER.densityFunc(x + 0.01, k1, k2);
+            }
+            return val;
+        },
+        value: function(x, l, k) {
+            return 0;
+        }
+    },
     getType: function(type) {
         for (var selTypeName in SelectionTypes) {
             var selType = SelectionTypes[selTypeName];
@@ -97,6 +190,24 @@ var SelectionTypes = {
         return null;
     }
 };
+
+var g_gamma = 7;
+var C_gamma = [0.99999999999980993, 676.5203681218851, -1259.1392167224028,771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+
+function gammaFunc(z) {
+
+    if (z < 0.5) return Math.PI / (Math.sin(Math.PI * z) * gammaFunc(1 - z));
+    else {
+        z -= 1;
+
+        var x = C_gamma[0];
+        for (var i = 1; i < g_gamma + 2; i++)
+        x += C_gamma[i] / (z + i);
+
+        var t = z + g_gamma + 0.5;
+        return Math.sqrt(2 * Math.PI) * Math.pow(t, (z + 0.5)) * Math.exp(-t) * x;
+    }
+}
 
 function getDensityArray(sortedArray, stepsCount, scale) {
      if (!stepsCount)

@@ -33,10 +33,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import logic.tests.QuantilePair;
 import org.apache.log4j.Logger;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 
 @Controller
 public class ApplicationController {
@@ -54,13 +58,41 @@ public class ApplicationController {
         return model;
     }
     
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public ModelAndView login() {
+        
+        ModelAndView model = new ModelAndView("login");
+        return model;
+    }
+    
+    @RequestMapping(value = "/signup", method = RequestMethod.GET)
+    public ModelAndView signup() {
+        ModelAndView model = new ModelAndView("signup");
+        return model;
+    }
+    
+    @RequestMapping(value = "/logoff", method = RequestMethod.GET)
+    public ModelAndView logoff(HttpServletResponse response) {
+        Cookie cookie = new Cookie("user", null);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        ModelAndView model = new ModelAndView("index");
+        return model;
+    }
+    
     @RequestMapping(value = "/selections", method = RequestMethod.GET)
-    public ModelAndView selections() {
+    public ModelAndView selections(@CookieValue(value = "user", defaultValue = "") String user) {
         logger.info("Trying to get selections model");
         
         ModelAndView model; 
         
         try {
+            if(user.isEmpty()){
+                model = new ModelAndView("index");
+                return model;
+            }
+            
             SortedSet<SelectionInfo> selectionsInfo = appService.getSelectionsInfo();
             model = new ModelAndView("selections");
             model.addObject("selectionsInfo", selectionsInfo);
@@ -77,12 +109,17 @@ public class ApplicationController {
     }
     
     @RequestMapping(value = "/tests", method = RequestMethod.GET)
-    public ModelAndView tests() {
+    public ModelAndView tests(@CookieValue(value = "user", defaultValue = "") String user) {
         logger.info("Trying to get tests model");
         
         ModelAndView model; 
         
         try {
+            if(user.isEmpty()){
+                model = new ModelAndView("index");
+                return model;
+            }
+            
             List<TestType> testTypes = appService.getTestTypes();
             model = new ModelAndView("tests");
             model.addObject("testTypes", testTypes);

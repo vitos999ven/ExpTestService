@@ -11,6 +11,21 @@
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/Виктор/Documents/NetBeansProjects/ExpTestService/src/java/taskmanager/tasks/TaskTypeEnum.java</file>
+            <file>file:/C:/Users/Виктор/Documents/NetBeansProjects/ExpTestService/web/WEB-INF/jsp/index.jsp</file>
+            <file>file:/C:/Users/Виктор/Documents/NetBeansProjects/ExpTestService/web/WEB-INF/web.xml</file>
+            <file>file:/C:/Users/Виктор/Documents/NetBeansProjects/ExpTestService/web/WEB-INF/resources/my-scripts/my-functions.js</file>
+            <file>file:/C:/Users/Виктор/Documents/NetBeansProjects/ExpTestService/web/WEB-INF/jsp/selections.jsp</file>
+            <file>file:/C:/Users/Виктор/Documents/NetBeansProjects/ExpTestService/src/java/logic/MathFunctionsHandler.java</file>
+            <file>file:/C:/Users/Виктор/Documents/NetBeansProjects/ExpTestService/web/WEB-INF/jsp/signup.jsp</file>
+            <file>file:/C:/Users/Виктор/Documents/NetBeansProjects/ExpTestService/web/WEB-INF/jsp/navbar.jsp</file>
+            <file>file:/C:/Users/Виктор/Documents/NetBeansProjects/ExpTestService/src/java/controllers/RequestParams.java</file>
+            <file>file:/C:/Users/Виктор/Documents/NetBeansProjects/ExpTestService/web/WEB-INF/jsp/login.jsp</file>
+            <file>file:/C:/Users/Виктор/Documents/NetBeansProjects/ExpTestService/src/java/controllers/ApplicationController.java</file>
+            <file>file:/C:/Users/Виктор/Documents/NetBeansProjects/ExpTestService/web/WEB-INF/resources/my-scripts/selections-init.js</file>
+            <file>file:/C:/Users/Виктор/Documents/NetBeansProjects/ExpTestService/src/java/logic/tests/PowerModulator.java</file>
+            <file>file:/C:/Users/Виктор/Documents/NetBeansProjects/ExpTestService/web/WEB-INF/jsp/tests.jsp</file>
+        </group>
     </open-files>
 </project-private>

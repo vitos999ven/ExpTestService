@@ -105,7 +105,7 @@ function onLoadIterationsCounts() {
         if (iterCount === defaultCount) {
             typeLabel.tooltip({
                 placement: "bottom",
-                title: "Default iterations count"
+                title: "Стандартное количество испытаний"
             });
         }
         
@@ -150,6 +150,7 @@ function getQuantilesByIterCount(min, count) {
 }
 
 function createQuantilesTable(data, currIter) {
+    var type = TestTypes.getType(document.currTestType.test_type);
     var procDiv = $("#processing-div");
     
     var quantilesTableDiv = procDiv.children("#quantiles-table-div");
@@ -165,7 +166,7 @@ function createQuantilesTable(data, currIter) {
     
     $("<div/>", {
         class: "panel-heading lead",
-        text: "Quantiles for iterations count " + data.iter_count 
+        text: "Квантили"
     }).appendTo(quantilesTableDiv);
     
     var quantilesTable = $("<table/>", {
@@ -220,20 +221,22 @@ function createQuantilesTable(data, currIter) {
             text: signLevelValue
         }).appendTo(firstHeadTr);
         
-        $("<th/>",{
-            class: "sign-level-side-th side-first small text-center",
-            "sign-level": signLevel,
-            colspan: 2,
-            side: "first",
-            text: "first"
-        }).appendTo(secondHeadTr);
+        if(!type.onesided){
+            $("<th/>",{
+                class: "sign-level-side-th side-first small text-center",
+                "sign-level": signLevel,
+                colspan: 2,
+                side: "first",
+                text: "0.05"
+            }).appendTo(secondHeadTr);
+        }
         
         $("<th/>",{
             class: "sign-level-side-th side-second small text-center",
             "sign-level": signLevel,
-            colspan: 2,
+            colspan: (type.onesided) ? 4 : 2,
             side: "second",
-            text: "second"
+            text: "0.95"
         }).appendTo(secondHeadTr);
         
         for (var selSize = minSelSize; selSize <= maxSelSize; selSize++) {
@@ -258,14 +261,19 @@ function createQuantilesTable(data, currIter) {
                 var size = selSize;
                 var level = signLevel;
                 var quant = quantile;
-
+                 
                 function setContent() {
+                    
                     TdDiv.empty();
                     if (!quant) {
                         $("<span/>", {
                             class: "glyphicon glyphicon-minus"
                         }).appendTo(TdDiv);
-                    } else {
+                    } else if(type.onesided){
+                        $("<div/>", {
+                            text: quant.second
+                        }).appendTo(TdDiv);
+                    }else{
                         var qTable = $("<table/>", {
                             class: "col-md-12 text-center"
                         }).appendTo(TdDiv);
@@ -431,15 +439,13 @@ function loadPower(selSize, currId) {
                     var powerDiv = procDiv.children("#power-div");
                     if (powerDiv.length === 0) {
                         powerDiv = $("<div/>", {
-                            id: "power-div",
-                            class: "panel panel-default"
+                            id: "power-div"
                         }).appendTo(procDiv);
                     }
                     powerDiv.empty();
-                    $("<div/>", {
+                    $("<label/>", {
                         id: "power-panel-heading",
-                        class: "panel-heading lead",
-                        text: "Power for selections size " + selSize
+                        text: "График мощности статистики для объема выборки " + selSize
                     }).appendTo(powerDiv);
                     
                     return powerDiv;
@@ -492,11 +498,11 @@ function loadPower(selSize, currId) {
                 }
 
                 var powerDiv = createPowerDiv();
-                plotPowerCharts(powerDiv, result.data);
+                plotPowerCharts(powerDiv, result.data, selSize);
             });
 }
 
-function plotPowerCharts(powerDiv, data) {
+function plotPowerCharts(powerDiv, data, selSize) {
     var powerPlotDiv = $("#power-plot-div");
     
     if (powerPlotDiv.length === 0) {
@@ -522,12 +528,12 @@ function plotPowerCharts(powerDiv, data) {
             type: "spline"
         },
         title: {
-            text: 'Weibull powers chart',
+            text: "Графики мощностей статистики против Weibull для n=" + selSize + " и уровнями значимости 0.01, 0.05, 0.1",
             x: -20 //center
         },
         xAxis: {
             title: {
-                text: 'Parameter'
+                text: 'Параметр формы'
             },
             plotLines: [{
                 value: 0,
@@ -537,7 +543,7 @@ function plotPowerCharts(powerDiv, data) {
         },
         yAxis: {
             title: {
-                text: 'Power'
+                text: 'Мощность'
             },
             plotLines: [{
                 value: 0,
