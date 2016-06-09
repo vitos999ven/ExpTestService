@@ -4,12 +4,12 @@
   <session-factory>
     <property name="show_sql">true</property>
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-    <property name="hibernate.connection.url">jdbc:mysql://localhost/exptest</property>
+    <property name="hibernate.connection.url">jdbc:mysql://$OPENSHIFT_MYSQL_DB_HOST:$OPENSHIFT_MYSQL_DB_PORT/exptest</property>
     <property name="hibernate.connection.useUnicode">true</property>
     <property name="hibernate.connection.characterEncoding">UTF-8</property>
     <property name="hibernate.connection.charSet">UTF-8</property>
-    <property name="hibernate.connection.username">root</property>
-    <property name="hibernate.connection.password">130491</property>
+    <property name="hibernate.connection.username">admin99UYLWy</property>
+    <property name="hibernate.connection.password">k2Vm8nmsd81k</property>
     <property name="hibernate.connection.pool_size">1</property>
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
     <property name="hibernate.show_sql">false</property>
